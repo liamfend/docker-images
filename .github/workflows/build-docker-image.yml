@@ -12,7 +12,8 @@ on:
 
 jobs:
   build:
-    runs-on: liamlidev/my-ubuntu-with-node-jdk:1.0
+    runs-on: ubuntu-latest
+    container: liamlidev/my-ubuntu-with-node-jdk:1.0
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -25,7 +26,9 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker -v
-          whereis docker
+          javac --version
+          java --version
+          node -v
 
 # docker build -t liamlidev/my-ubuntu-with-node-jdk:1.0 .
 # docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
