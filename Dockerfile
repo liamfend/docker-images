@@ -10,7 +10,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 
 # 安装OpenJDK
-RUN apt-get install -y openjdk-17-jdk && apt-get clean
+RUN apt-get install -y ruby-full build-essential git unzip openjdk-17-jdk && apt-get clean
 
 # 设置Java环境变量
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
