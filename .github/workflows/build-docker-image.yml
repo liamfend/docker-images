@@ -1,16 +1,16 @@
 name: Build and Push Docker Image
+# on:
+#   push:
+#     branches:
+#       - master # 触发条件，当有代码 push 到 main 分支时执行
 on:
-  push:
-    branches:
-      - master # 触发条件，当有代码 push 到 main 分支时执行
+  workflow_dispatch:
+    inputs:
+      approval:
+        description: "Approve the workflow"
+        required: true
 
 jobs:
-  confirm:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Manual approval
-        id: approval
-        run: echo "Manually approve the workflow"
   build:
     needs: confirm
     runs-on: ubuntu-latest
@@ -19,18 +19,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build Docker image
-        run: |
-          docker build -t liamlidev/my-ubuntu-with-node-jdk:1.0 .
-  push:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Push Docker image
+      - name: Build And Push Docker image
+        with:
+          approval: ${{ github.event.inputs.approval }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push liamlidev/my-ubuntu-with-node-jdk:1.0
+          if [ "$approval" == "true" ]; then
+            docker build -t liamlidev/my-ubuntu-with-node-jdk:1.0 .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push liamlidev/my-ubuntu-with-node-jdk:1.0
+          else
+            echo "Approval not received, skipping the workflow."
+            exit 1
+          fi
