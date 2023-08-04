@@ -28,6 +28,7 @@ jobs:
           java --version
           node -v
           ls -a
+          pwd
 
 # docker build -t liamlidev/my-ubuntu-with-node-jdk:1.0 .
 # docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
