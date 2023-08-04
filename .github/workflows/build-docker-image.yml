@@ -25,6 +25,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           node -v 
+          docker -v
           pwd
           ls -a
           javac --version
