@@ -5,18 +5,32 @@ on:
       - master # 触发条件，当有代码 push 到 main 分支时执行
 
 jobs:
+  confirm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Manual approval
+        id: approval
+        run: echo "Manually approve the workflow"
   build:
+    needs: confirm
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build and push Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }} # Docker Hub 用户名的密钥，需要在 GitHub 仓库设置中配置
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }} # Docker Hub 密码的密钥，需要在 GitHub 仓库设置中配置
+      - name: Build Docker image
         run: |
           docker build -t liamlidev/my-ubuntu-with-node-jdk:1.0 .
+  push:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Push Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push liamlidev/my-ubuntu-with-node-jdk:1.0

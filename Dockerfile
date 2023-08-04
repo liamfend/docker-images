@@ -2,9 +2,12 @@
 # 使用一个基础的Ubuntu镜像
 FROM ubuntu:20.04
 
+# 安装curl
+RUN apt-get update && apt-get install -y curl && apt-get clean
+
 # 安装Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-RUN apt-get update && apt-get install -y nodejs
+RUN apt-get install -y nodejs
 
 # 安装OpenJDK
 RUN apt-get install -y openjdk-17-jdk && apt-get clean
